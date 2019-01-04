@@ -114,6 +114,23 @@ module Docx
       zip.close
     end
 
+    def save_and_return(path)
+      update
+      Zip::OutputStream.open(path) do |out|
+        zip.each do |entry|
+          out.put_next_entry(entry.name)
+
+          if @replace[entry.name]
+            out.write(@replace[entry.name])
+          else
+            out.write(zip.read(entry.name))
+          end
+        end
+      end
+      zip.close
+      return zip
+    end
+
     alias_method :text, :to_s
 
     def replace_entry(entry_path, file_contents)
