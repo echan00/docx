@@ -114,9 +114,9 @@ module Docx
       zip.close
     end
 
-    def save_and_return(path)
+    def save_and_return
       update
-      Zip::OutputStream.open(path) do |out|
+      stringio = Zip::OutputStream.write_buffer do |out|
         zip.each do |entry|
           out.put_next_entry(entry.name)
 
@@ -128,7 +128,7 @@ module Docx
         end
       end
       zip.close
-      return zip
+      return stringio.string
     end
 
     alias_method :text, :to_s
