@@ -26,11 +26,11 @@ module Docx
       @document_xml = @zip.read('word/document.xml')
 
       content_types_xml = @zip.read('[Content_Types].xml')
-      content_types = Nokogiri::XML(@document_xml)
+      content_types = Nokogiri::XML(content_types_xml)
       @header_and_footers = []
       content_types.css('Override').each do |override_node|
         if override_node['PartName'].include? "header" || override_node['PartName'].include? "footer"
-          @header_and_footers = override_node['PartName']
+          @header_and_footers << override_node['PartName']
         end
       end
 
@@ -164,7 +164,7 @@ module Docx
     #++
     def update
       replace_entry "word/document.xml", doc.serialize(:save_with => 0)
-      
+
       @header_and_footers.each_with_index do |header_and_footer, index|
         replace_entry header_and_footer, header_and_footers_xml[index].serialize(:save_with => 0) if header_and_footers_xml[index]  
       end
