@@ -18,23 +18,27 @@ module Docx
   #     puts d.text
   #   end
   class Document
-    attr_reader :xml, :doc, :zip, :styles, :header, :footer
+    attr_reader :xml, :doc, :zip, :styles, :header_and_footers, :header_and_footers_xml
     
     def initialize(path, &block)
       @replace = {}
       @zip = Zip::File.open(path)
       @document_xml = @zip.read('word/document.xml')
-      header_path = 'word/header1.xml'
-      footer_path = 'word/footer1.xml'
 
-      if @zip.find_entry(header_path)
-        @header_xml = @zip.read(header_path) 
-        @header = Nokogiri::XML(@header_xml)
+      content_types_xml = @zip.read('[Content_Types].xml')
+      content_types = Nokogiri::XML(@document_xml)
+      @header_and_footers = []
+      content_types.css('Override').each do |override_node|
+        if override_node['PartName'].include? "header" || override_node['PartName'].include? "footer"
+          @header_and_footers = override_node['PartName']
+        end
       end
 
-      if @zip.find_entry(footer_path)
-        @footer_xml = @zip.read(footer_path)
-        @footer = Nokogiri::XML(@footer_xml)
+      @header_and_footers_xml = []
+      @header_and_footers.each do |elem|
+        if @zip.find_entry(elem)          
+          @header_and_footers_xml << Nokogiri::XML(@zip.read(elem))
+        end
       end
       
       @doc = Nokogiri::XML(@document_xml)
@@ -160,8 +164,10 @@ module Docx
     #++
     def update
       replace_entry "word/document.xml", doc.serialize(:save_with => 0)
-      replace_entry "word/header1.xml", header.serialize(:save_with => 0) if header
-      replace_entry "word/footer1.xml", footer.serialize(:save_with => 0) if footer
+      
+      @header_and_footers.each_with_index do |header_and_footer, index|
+        replace_entry header_and_footer, header_and_footers_xml[index].serialize(:save_with => 0) if header_and_footers_xml[index]  
+      end
     end
 
     # generate Elements::Containers::Paragraph from paragraph XML node
