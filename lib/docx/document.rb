@@ -30,7 +30,7 @@ module Docx
       @header_and_footers = []
       content_types.css('Override').each do |override_node|
         if override_node['PartName'].include?("header") || override_node['PartName'].include?("footer")
-          @header_and_footers << override_node['PartName']
+          @header_and_footers << override_node['PartName'][1..-1]
         end
       end
 
