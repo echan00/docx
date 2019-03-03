@@ -49,7 +49,7 @@ module Docx
           temp.root['mc:Ignorable'] = "w14 w15 w16se w16cid wp14"
           temp.root['xmlns:mc'] = "http://schemas.openxmlformats.org/markup-compatibility/2006"
           temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"      
-          @header_and_footers_xml << Nokogiri::XML(temp.to_xml)
+          @header_and_footers_xml << Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))
         end
       end
       
@@ -65,7 +65,7 @@ module Docx
       temp.root['mc:Ignorable'] = "w14 w15 w16se w16cid wp14"
       temp.root['xmlns:mc'] = "http://schemas.openxmlformats.org/markup-compatibility/2006"      
       temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"      
-      @doc = Nokogiri::XML(temp.to_xml)      
+      @doc = Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))
       
       @styles_xml = @zip.read('word/styles.xml')
       @styles = Nokogiri::XML(@styles_xml)
