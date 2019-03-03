@@ -63,7 +63,7 @@ module Docx
       temp.root['xmlns:w16se'] = "http://schemas.microsoft.com/office/word/2015/wordml/symex"
       temp.root['mc:Ignorable'] = "w14 w15 w16se w16cid wp14"
       temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"      
-      @doc << Nokogiri::XML(temp.to_xml)      
+      @doc = Nokogiri::XML(temp.to_xml)      
       
       @styles_xml = @zip.read('word/styles.xml')
       @styles = Nokogiri::XML(@styles_xml)
