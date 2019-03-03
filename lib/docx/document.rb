@@ -47,6 +47,7 @@ module Docx
           temp.root['xmlns:w16cid'] = "http://schemas.microsoft.com/office/word/2016/wordml/cid"
           temp.root['xmlns:w16se'] = "http://schemas.microsoft.com/office/word/2015/wordml/symex"
           temp.root['mc:Ignorable'] = "w14 w15 w16se w16cid wp14"
+          temp.root['xmlns:mc'] = "http://schemas.openxmlformats.org/markup-compatibility/2006"
           temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"      
           @header_and_footers_xml << Nokogiri::XML(temp.to_xml)
         end
@@ -62,6 +63,7 @@ module Docx
       temp.root['xmlns:w16cid'] = "http://schemas.microsoft.com/office/word/2016/wordml/cid"
       temp.root['xmlns:w16se'] = "http://schemas.microsoft.com/office/word/2015/wordml/symex"
       temp.root['mc:Ignorable'] = "w14 w15 w16se w16cid wp14"
+      temp.root['xmlns:mc'] = "http://schemas.openxmlformats.org/markup-compatibility/2006"      
       temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"      
       @doc = Nokogiri::XML(temp.to_xml)      
       
