@@ -48,7 +48,11 @@ module Docx
           temp.root['xmlns:w16se'] = "http://schemas.microsoft.com/office/word/2015/wordml/symex"
           temp.root['mc:Ignorable'] = "w14 w15 w16se w16cid wp14"
           temp.root['xmlns:mc'] = "http://schemas.openxmlformats.org/markup-compatibility/2006"
-          temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"      
+          temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"              
+          temp.root['xmlns:r'] = "http://schemas.openxmlformats.org/officeDocument/2006/relationships" 
+          temp.root['xmlns:m'] = "http://schemas.openxmlformats.org/officeDocument/2006/math"
+          temp.root['xmlns:v'] = "urn:schemas-microsoft-com:vml"          
+          
           @header_and_footers_xml << Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))
         end
       end
@@ -64,7 +68,10 @@ module Docx
       temp.root['xmlns:w16se'] = "http://schemas.microsoft.com/office/word/2015/wordml/symex"
       temp.root['mc:Ignorable'] = "w14 w15 w16se w16cid wp14"
       temp.root['xmlns:mc'] = "http://schemas.openxmlformats.org/markup-compatibility/2006"      
-      temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"      
+      temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
+      temp.root['xmlns:r'] = "http://schemas.openxmlformats.org/officeDocument/2006/relationships" 
+      temp.root['xmlns:m'] = "http://schemas.openxmlformats.org/officeDocument/2006/math"
+      temp.root['xmlns:v'] = "urn:schemas-microsoft-com:vml"         
       @doc = Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))
       
       @styles_xml = @zip.read('word/styles.xml')
