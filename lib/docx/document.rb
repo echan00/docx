@@ -27,13 +27,13 @@ module Docx
 
       content_types_xml = @zip.read('[Content_Types].xml')
       content_types = Nokogiri::XML(content_types_xml)
+      
       @header_and_footers = []
       content_types.css('Override').each do |override_node|
         if override_node['PartName'].include?("header") || override_node['PartName'].include?("footer")
           @header_and_footers << override_node['PartName'][1..-1]
         end
       end
-
       @header_and_footers_xml = []
       @header_and_footers.each do |elem|
         if @zip.find_entry(elem)          
@@ -48,6 +48,33 @@ module Docx
         yield self
         @zip.close
       end
+
+      @charts = []
+      content_types.css('Override').each do |override_node|
+        if override_node['PartName'].include?("charts")
+          @charts << override_node['PartName'][1..-1]
+        end
+      end
+      @charts_xml = []
+      @charts.each do |elem|
+        if @zip.find_entry(elem)          
+          @charts_xml << Nokogiri::XML(@zip.read(elem))
+        end
+      end
+
+      @diagrams = []
+      content_types.css('Override').each do |override_node|
+        if override_node['PartName'].include?("diagrams")
+          @diagrams << override_node['PartName'][1..-1]
+        end
+      end
+      @diagrams_xml = []
+      @diagrams.each do |elem|
+        if @zip.find_entry(elem)          
+          @diagrams_xml << Nokogiri::XML(@zip.read(elem))
+        end
+      end
+
     end
 
 
@@ -168,6 +195,14 @@ module Docx
       @header_and_footers.each_with_index do |header_and_footer, index|
         replace_entry header_and_footer, header_and_footers_xml[index].serialize(:save_with => 0) if header_and_footers_xml[index]  
       end
+
+      @charts.each_with_index do |chart, index|
+        replace_entry chart, charts_xml[index].serialize(:save_with => 0) if charts_xml[index]  
+      end
+
+      @diagrams.each_with_index do |diagram, index|
+        replace_entry diagram, diagrams_xml[index].serialize(:save_with => 0) if diagrams_xml[index]  
+      end  
     end
 
     # generate Elements::Containers::Paragraph from paragraph XML node
