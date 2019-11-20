@@ -18,7 +18,7 @@ module Docx
   #     puts d.text
   #   end
   class Document
-    attr_reader :xml, :doc, :zip, :styles, :header_and_footers, :header_and_footers_xml
+    attr_reader :xml, :doc, :zip, :styles, :header_and_footers, :header_and_footers_xml, :charts, :charts_xml, :diagrams, :diagrams_xml
     
     def initialize(path, &block)
       @replace = {}
@@ -90,7 +90,22 @@ module Docx
       @charts_xml = []
       @charts.each do |elem|
         if @zip.find_entry(elem)          
-          @charts_xml << Nokogiri::XML(@zip.read(elem))
+          temp = Nokogiri::XML(@zip.read(elem))
+          temp.root['xmlns:wp14'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
+          temp.root['xmlns:wp'] = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+          temp.root['xmlns:w10'] = "urn:schemas-microsoft-com:office:word"
+          temp.root['xmlns:w'] = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+          temp.root['xmlns:w14'] = "http://schemas.microsoft.com/office/word/2010/wordml"
+          temp.root['xmlns:w15'] = "http://schemas.microsoft.com/office/word/2012/wordml"
+          temp.root['xmlns:w16cid'] = "http://schemas.microsoft.com/office/word/2016/wordml/cid"
+          temp.root['xmlns:w16se'] = "http://schemas.microsoft.com/office/word/2015/wordml/symex"
+          temp.root['mc:Ignorable'] = "w14 w15 w16se w16cid wp14"
+          temp.root['xmlns:mc'] = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+          temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"              
+          temp.root['xmlns:r'] = "http://schemas.openxmlformats.org/officeDocument/2006/relationships" 
+          temp.root['xmlns:m'] = "http://schemas.openxmlformats.org/officeDocument/2006/math"
+          temp.root['xmlns:v'] = "urn:schemas-microsoft-com:vml"                    
+          @charts_xml << Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))          
         end
       end
 
@@ -103,7 +118,22 @@ module Docx
       @diagrams_xml = []
       @diagrams.each do |elem|
         if @zip.find_entry(elem)          
-          @diagrams_xml << Nokogiri::XML(@zip.read(elem))
+          temp = Nokogiri::XML(@zip.read(elem))
+          temp.root['xmlns:wp14'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
+          temp.root['xmlns:wp'] = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+          temp.root['xmlns:w10'] = "urn:schemas-microsoft-com:office:word"
+          temp.root['xmlns:w'] = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+          temp.root['xmlns:w14'] = "http://schemas.microsoft.com/office/word/2010/wordml"
+          temp.root['xmlns:w15'] = "http://schemas.microsoft.com/office/word/2012/wordml"
+          temp.root['xmlns:w16cid'] = "http://schemas.microsoft.com/office/word/2016/wordml/cid"
+          temp.root['xmlns:w16se'] = "http://schemas.microsoft.com/office/word/2015/wordml/symex"
+          temp.root['mc:Ignorable'] = "w14 w15 w16se w16cid wp14"
+          temp.root['xmlns:mc'] = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+          temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"              
+          temp.root['xmlns:r'] = "http://schemas.openxmlformats.org/officeDocument/2006/relationships" 
+          temp.root['xmlns:m'] = "http://schemas.openxmlformats.org/officeDocument/2006/math"
+          temp.root['xmlns:v'] = "urn:schemas-microsoft-com:vml"                    
+          @diagrams_xml << Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))   
         end
       end
 
