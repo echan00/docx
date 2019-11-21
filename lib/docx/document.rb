@@ -104,7 +104,9 @@ module Docx
           temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"              
           temp.root['xmlns:r'] = "http://schemas.openxmlformats.org/officeDocument/2006/relationships" 
           temp.root['xmlns:m'] = "http://schemas.openxmlformats.org/officeDocument/2006/math"
-          temp.root['xmlns:v'] = "urn:schemas-microsoft-com:vml"                    
+          temp.root['xmlns:v'] = "urn:schemas-microsoft-com:vml"
+          temp.root['xmlns:c'] = "urn:schemas-microsoft-com:cv"
+          temp.root['xmlns:a'] = "urn:schemas-microsoft-com:a"
           @charts_xml << Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))          
         end
       end
@@ -132,7 +134,9 @@ module Docx
           temp.root['xmlns:wps'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"              
           temp.root['xmlns:r'] = "http://schemas.openxmlformats.org/officeDocument/2006/relationships" 
           temp.root['xmlns:m'] = "http://schemas.openxmlformats.org/officeDocument/2006/math"
-          temp.root['xmlns:v'] = "urn:schemas-microsoft-com:vml"                    
+          temp.root['xmlns:v'] = "urn:schemas-microsoft-com:vml"
+          temp.root['xmlns:c'] = "urn:schemas-microsoft-com:cv"
+          temp.root['xmlns:a'] = "urn:schemas-microsoft-com:a"
           @diagrams_xml << Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))   
         end
       end
