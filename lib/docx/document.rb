@@ -83,7 +83,7 @@ module Docx
 
       @charts = []
       content_types.css('Override').each do |override_node|
-        if override_node['PartName'].include?("charts")
+        if override_node['PartName'].include?("charts/ch")
           @charts << override_node['PartName'][1..-1]
         end
       end
