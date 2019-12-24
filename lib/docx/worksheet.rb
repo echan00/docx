@@ -18,7 +18,7 @@ module Docx
   #     puts d.text
   #   end
   class Worksheet
-    attr_reader :xml, :zip, :workbook, :worksheets, :sharedstrings, :sharedstrings_xml, :worksheets_xml, :styles, :charts, :charts_xml, :drawings, :drawings_xml
+    attr_reader :xml, :zip, :workbook, :worksheets, :sharedstrings, :sharedstrings_xml, :worksheets_xml, :styles, :charts, :charts_xml, :drawings, :drawings_xml, :comments, :comments_xml
     
     def initialize(path, &block)
       @replace = {}
@@ -90,6 +90,23 @@ module Docx
           temp.root['xmlns:c'] = "urn:schemas-microsoft-com:c"
           temp.root['xmlns:a'] = "urn:schemas-microsoft-com:a"
           @drawings_xml << Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))   
+        end
+      end
+
+      @comments = []
+      content_types.css('Override').each do |override_node|
+        if override_node['PartName'].include?("comments")
+          @comments << override_node['PartName'][1..-1]
+        end
+      end
+      @comments_xml = []
+      @comments.each do |elem|
+        if @zip.find_entry(elem)          
+          temp = Nokogiri::XML(@zip.read(elem))
+          temp.root['xmlns:v'] = "urn:schemas-microsoft-com:vml"
+          temp.root['xmlns:c'] = "urn:schemas-microsoft-com:c"
+          temp.root['xmlns:a'] = "urn:schemas-microsoft-com:a"
+          @comments_xml << Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))   
         end
       end
 
@@ -223,6 +240,10 @@ module Docx
       @drawings.each_with_index do |drawing, index|
         replace_entry drawing, drawings_xml[index].serialize(:save_with => 0) if drawings_xml[index]  
       end  
+
+      @comments.each_with_index do |comment, index|
+        replace_entry comment, comments_xml[index].serialize(:save_with => 0) if comments_xml[index]  
+      end        
     end
 
     # generate Elements::Containers::Paragraph from paragraph XML node
