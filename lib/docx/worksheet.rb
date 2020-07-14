@@ -24,15 +24,28 @@ module Docx
       @replace = {}
       @zip = Zip::File.open(path)
       
-      @workbook_xml = @zip.read('xl/workbook.xml')
+      begin
+        @workbook_xml = @zip.read('xl/workbook.xml')
+      rescue
+        @workbook_xml = ''
+      end      
       temp = Nokogiri::XML(@workbook_xml) 
       @workbook = Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))
 
-      @sharedstrings_xml = @zip.read('xl/sharedStrings.xml')
+      begin
+        @sharedstrings_xml = @zip.read('xl/sharedStrings.xml')
+      rescue
+        @sharedstrings_xml = ''
+      end
       temp = Nokogiri::XML(@sharedstrings_xml) 
-      @sharedstrings = Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))            
-
-      content_types_xml = @zip.read('[Content_Types].xml')
+      @sharedstrings = Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))
+        
+      
+      begin
+        content_types_xml = @zip.read('[Content_Types].xml')
+      rescue
+        content_types_xml = ''
+      end   
       content_types = Nokogiri::XML(content_types_xml)
       
       @worksheets = []
