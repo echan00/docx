@@ -18,26 +18,26 @@ module Docx
   #     puts d.text
   #   end
   class Document
-    attr_reader :xml, :doc, :zip, :styles, :header_and_footers, :header_and_footers_xml, :charts, :charts_xml, :diagrams, :diagrams_xml
+    attr_reader :xml, :doc, :styles, :header_and_footers_xml, :charts_xml, :diagrams_xml
     
     def initialize(path, &block)
       @replace = {}
-      @zip = Zip::File.open(path)
-      @document_xml = @zip.read('word/document.xml')
+      zip = Zip::File.open(path)
+      document_xml = zip.read('word/document.xml')
 
-      content_types_xml = @zip.read('[Content_Types].xml')
+      content_types_xml = zip.read('[Content_Types].xml')
       content_types = Nokogiri::XML(content_types_xml)
       
-      @header_and_footers = []
+      header_and_footers = []
       content_types.css('Override').each do |override_node|
         if override_node['PartName'].include?("header") || override_node['PartName'].include?("footer")
-          @header_and_footers << override_node['PartName'][1..-1]
+          header_and_footers << override_node['PartName'][1..-1]
         end
       end
       @header_and_footers_xml = []
-      @header_and_footers.each do |elem|
-        if @zip.find_entry(elem)
-          temp = Nokogiri::XML(@zip.read(elem))
+      header_and_footers.each do |elem|
+        if zip.find_entry(elem)
+          temp = Nokogiri::XML(zip.read(elem))
           temp.root['xmlns:wp14'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
           temp.root['xmlns:wp'] = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
           temp.root['xmlns:w10'] = "urn:schemas-microsoft-com:office:word"
@@ -57,7 +57,7 @@ module Docx
         end
       end
       
-      temp = Nokogiri::XML(@document_xml)
+      temp = Nokogiri::XML(document_xml)
       temp.root['xmlns:wp14'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
       temp.root['xmlns:wp'] = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
       temp.root['xmlns:w10'] = "urn:schemas-microsoft-com:office:word"
@@ -74,23 +74,23 @@ module Docx
       temp.root['xmlns:v'] = "urn:schemas-microsoft-com:vml"         
       @doc = Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))
       
-      @styles_xml = @zip.read('word/styles.xml')
-      @styles = Nokogiri::XML(@styles_xml)
+      styles_xml = @zip.read('word/styles.xml')
+      @styles = Nokogiri::XML(styles_xml)
       if block_given?
         yield self
         @zip.close
       end
 
-      @charts = []
+      charts = []
       content_types.css('Override').each do |override_node|
         if override_node['PartName'].include?("charts/ch")
-          @charts << override_node['PartName'][1..-1]
+          charts << override_node['PartName'][1..-1]
         end
       end
       @charts_xml = []
-      @charts.each do |elem|
-        if @zip.find_entry(elem)          
-          temp = Nokogiri::XML(@zip.read(elem))
+      charts.each do |elem|
+        if zip.find_entry(elem)          
+          temp = Nokogiri::XML(zip.read(elem))
           temp.root['xmlns:wp14'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
           temp.root['xmlns:wp'] = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
           temp.root['xmlns:w10'] = "urn:schemas-microsoft-com:office:word"
@@ -111,16 +111,16 @@ module Docx
         end
       end
 
-      @diagrams = []
+      diagrams = []
       content_types.css('Override').each do |override_node|
         if override_node['PartName'].include?("diagrams")
-          @diagrams << override_node['PartName'][1..-1]
+          diagrams << override_node['PartName'][1..-1]
         end
       end
       @diagrams_xml = []
-      @diagrams.each do |elem|
-        if @zip.find_entry(elem)          
-          temp = Nokogiri::XML(@zip.read(elem))
+      diagrams.each do |elem|
+        if zip.find_entry(elem)          
+          temp = Nokogiri::XML(zip.read(elem))
           temp.root['xmlns:wp14'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
           temp.root['xmlns:wp'] = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
           temp.root['xmlns:w10'] = "urn:schemas-microsoft-com:office:word"
