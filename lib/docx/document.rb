@@ -255,21 +255,21 @@ module Docx
     # TODO: Method to set flag on files that have been edited, probably by inserting something at the
     # end of methods that make edits?
     #++
-    def update
-      replace_entry "word/document.xml", doc.serialize(:save_with => 0)
-
-      @header_and_footers.each_with_index do |header_and_footer, index|
-        replace_entry header_and_footer, header_and_footers_xml[index].serialize(:save_with => 0) if header_and_footers_xml[index]  
-      end
-
-      @charts.each_with_index do |chart, index|
-        replace_entry chart, charts_xml[index].serialize(:save_with => 0) if charts_xml[index]  
-      end
-
-      @diagrams.each_with_index do |diagram, index|
-        replace_entry diagram, diagrams_xml[index].serialize(:save_with => 0) if diagrams_xml[index]  
-      end  
-    end
+    #def update
+    #  replace_entry "word/document.xml", doc.serialize(:save_with => 0)
+#
+    #  @header_and_footers.each_with_index do |header_and_footer, index|
+    #    replace_entry header_and_footer, header_and_footers_xml[index].serialize(:save_with => 0) if header_and_footers_xml[index]  
+    #  end
+#
+    #  @charts.each_with_index do |chart, index|
+    #    replace_entry chart, charts_xml[index].serialize(:save_with => 0) if charts_xml[index]  
+    #  end
+#
+    #  @diagrams.each_with_index do |diagram, index|
+    #    replace_entry diagram, diagrams_xml[index].serialize(:save_with => 0) if diagrams_xml[index]  
+    #  end  
+    #end
 
     # generate Elements::Containers::Paragraph from paragraph XML node
     def parse_paragraph_from(p_node)
