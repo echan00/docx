@@ -79,7 +79,7 @@ module Docx
         @styles = Nokogiri::XML(@styles_xml)
       else
         @styles_xml = nil
-        @styles = nil
+        @styles = Nokogiri::XML(@styles_xml)
       end
       if block_given?
         yield self
