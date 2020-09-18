@@ -74,8 +74,13 @@ module Docx
       temp.root['xmlns:v'] = "urn:schemas-microsoft-com:vml"         
       @doc = Nokogiri::XML(temp.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML))
       
-      @styles_xml = @zip.read('word/styles.xml')
-      @styles = Nokogiri::XML(@styles_xml)
+      if File.file?('word/styles.xml')
+        @styles_xml = @zip.read('word/styles.xml')
+        @styles = Nokogiri::XML(@styles_xml)
+      else
+        @styles_xml = nil
+        @styles = nil
+      end
       if block_given?
         yield self
         @zip.close
