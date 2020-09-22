@@ -238,6 +238,8 @@ module Docx
 
           if @replace[entry.name]
             out.write(@replace[entry.name])
+          elsif entry.directory?
+            #skip directories            
           else
             out.write(zip.read(entry.name))
           end
