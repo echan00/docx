@@ -23,7 +23,7 @@ module Docx
     def initialize(path, &block)
       @replace = {}
       @zip = Zip::File.open(path)
-      @document_xml = @zip.read('word/document.xml')
+      document_xml = @zip.read('word/document.xml')
 
       @content_types_xml = @zip.read('[Content_Types].xml')
       content_types = Nokogiri::XML(@content_types_xml)
@@ -57,7 +57,7 @@ module Docx
         end
       end
       
-      temp = Nokogiri::XML(@document_xml)
+      temp = Nokogiri::XML(document_xml)
       temp.root['xmlns:wp14'] = "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"
       temp.root['xmlns:wp'] = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
       temp.root['xmlns:w10'] = "urn:schemas-microsoft-com:office:word"
