@@ -23,7 +23,14 @@ module Docx
     def initialize(path, &block)
       @replace = {}
       @zip = Zip::File.open(path)
-      document_xml = @zip.read('word/document.xml')
+
+      document_xmls = []
+      content_types.css('Override').each do |override_node|
+        if override_node['PartName'].include?("document")
+          document_xmls << override_node['PartName'][1..-1]
+        end
+      end      
+      document_xml = document_xmls[0]
 
       @content_types_xml = @zip.read('[Content_Types].xml')
       content_types = Nokogiri::XML(@content_types_xml)
