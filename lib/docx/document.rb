@@ -23,7 +23,9 @@ module Docx
     def initialize(path, &block)
       @replace = {}
       @zip = Zip::File.open(path)
-
+      @content_types_xml = @zip.read('[Content_Types].xml')
+      content_types = Nokogiri::XML(@content_types_xml)
+      
       document_xmls = []
       content_types.css('Override').each do |override_node|
         if override_node['PartName'].include?("document")
@@ -31,9 +33,6 @@ module Docx
         end
       end      
       document_xml = document_xmls[0]
-
-      @content_types_xml = @zip.read('[Content_Types].xml')
-      content_types = Nokogiri::XML(@content_types_xml)
       
       @header_and_footers = []
       content_types.css('Override').each do |override_node|
