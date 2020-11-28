@@ -32,7 +32,7 @@ module Docx
           document_xmls << override_node['PartName'][1..-1]
         end
       end      
-      document_xml = document_xmls[0]
+      document_xml = @zip.read(document_xmls[0])
       
       @header_and_footers = []
       content_types.css('Override').each do |override_node|
