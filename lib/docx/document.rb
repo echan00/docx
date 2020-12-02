@@ -33,6 +33,7 @@ module Docx
         end
       end      
       document_xml = @zip.read(document_xmls[0])
+      document_xml = @zip.read('word/document.xml') unless document_xml.present?
       
       @header_and_footers = []
       content_types.css('Override').each do |override_node|
