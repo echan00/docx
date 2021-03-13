@@ -33,9 +33,12 @@ module Docx
         end
       end
 
-      document_xml = @zip.read(document_xmls[0])
-      document_xml = @zip.read('word/document.xml') if document_xml.nil?
-
+      begin
+        document_xml = @zip.read(document_xmls[0])
+      rescue
+        document_xml = @zip.read('word/document.xml')
+      end
+            
       @header_and_footers = []
       content_types.css('Override').each do |override_node|
         if override_node['PartName'].include?("header") || override_node['PartName'].include?("footer") || override_node['PartName'].include?("footnotes")
